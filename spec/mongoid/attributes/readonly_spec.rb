@@ -196,6 +196,24 @@ describe Mongoid::Attributes::Readonly do
         end
       end
 
+      context "when updating via update" do
+
+        it "raises an error" do
+          expect {
+            Person.update({:title => "mr"})
+          }.to raise_error(Mongoid::Errors::ReadonlyAttribute)
+        end
+      end
+
+      context "when updating via update_all" do
+
+        it "raises an error" do
+          expect {
+            Person.update_all({:title => "mr"})
+          }.to raise_error(Mongoid::Errors::ReadonlyAttribute)
+        end
+      end
+
       context "when updating via remove_attribute" do
 
         it "raises an error" do

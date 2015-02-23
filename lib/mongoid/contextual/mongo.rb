@@ -478,7 +478,11 @@ module Mongoid
       # @since 3.0.4
       def update_documents(attributes, method = :update)
         return false unless attributes
-        attributes = Hash[attributes.map { |k, v| [klass.database_field_name(k.to_s), v] }]
+
+        readonly_attributes = klass.readonly_attributes.to_a
+        updated_readonly_attrs = attributes.select{|k, v| readonly_attributes.include?(k.to_s)}
+        raise Errors::ReadonlyAttribute.new(updated_readonly_attrs.keys, updated_readonly_attrs.values) if updated_readonly_attrs.present?
+
         query.send(method, attributes.__consolidate__(klass))
       end
 
